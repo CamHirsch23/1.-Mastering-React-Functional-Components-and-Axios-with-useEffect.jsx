@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import md5 from 'md5';
 
 const CharacterDetail = ({ characterId }) => {
   const [character, setCharacter] = useState(null);
@@ -9,8 +10,10 @@ const CharacterDetail = ({ characterId }) => {
 
     const fetchCharacterDetail = async () => {
       const publicKey = '<YOURPUBLICKEY>';
-      const hash = '<YOURHASH>';
-      const url = `https://gateway.marvel.com/v1/public/characters/${characterId}?ts=1&apikey=${publicKey}&hash=${hash}`;
+      const privateKey = '<YOURPRIVATEKEY>';
+      const ts = new Date().getTime();
+      const hash = md5(ts + privateKey + publicKey);
+      const url = `https://gateway.marvel.com/v1/public/characters/${characterId}?ts=${ts}&apikey=${publicKey}&hash=${hash}`;
       try {
         const response = await axios.get(url);
         setCharacter(response.data.data.results[0]);
